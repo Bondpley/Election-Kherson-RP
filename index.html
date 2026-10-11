@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Вибори Президента України</title>
+<style>
+  :root{
+    --blue:#002f61;
+    --blue-dark:#004494;
+    --yellow:#FFD700;
+    --bg:#f5f7fa;
+    --card:#ffffff;
+    --border:#e2e8f0;
+    --text:#1a202c;
+    --muted:#64748b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  header{
+    background:linear-gradient(135deg,var(--blue) 0%,var(--blue-dark) 100%);
+    color:#fff;
+    padding:40px 20px;
+    text-align:center;
+    border-bottom:4px solid var(--yellow);
+  }
+  header h1{
+    font-size:clamp(1.5rem,4vw,2.25rem);
+    font-weight:700;
+    margin-bottom:8px;
+    letter-spacing:-0.02em;
+  }
+  header p{
+    font-size:clamp(0.95rem,2.5vw,1.1rem);
+    opacity:.95;
+  }
+  main{
+    max-width:1000px;
+    margin:0 auto;
+    padding:32px 20px 60px;
+  }
+  .section-title{
+    font-size:1.15rem;
+    font-weight:600;
+    margin-bottom:16px;
+    color:var(--text);
+  }
+  .candidates{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:16px;
+    margin-bottom:28px;
+  }
+  .candidate{
+    background:var(--card);
+    border:2px solid var(--border);
+    border-radius:14px;
+    padding:20px;
+    cursor:pointer;
+    transition:border-color .15s,box-shadow .15s,transform .1s;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    position:relative;
+  }
+  .candidate:hover{
+    border-color:#cbd5e1;
+    box-shadow:0 4px 14px rgba(0,0,0,.06);
+  }
+  .candidate.selected{
+    border-color:var(--blue);
+    box-shadow:0 0 0 3px rgba(0,87,183,.15);
+  }
+  .candidate.selected::after{
+    content:"✓";
+    position:absolute;
+    top:10px;
+    right:12px;
+    background:var(--blue);
+    color:#fff;
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    font-weight:700;
+  }
+  .candidate img{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid var(--border);
+    margin-bottom:14px;
+    background:#e2e8f0;
+  }
+  .candidate.selected img{border-color:var(--blue)}
+  .candidate .name{
+    font-size:1.05rem;
+    font-weight:700;
+    margin-bottom:4px;
+  }
+  .candidate .party{
+    font-size:.88rem;
+    color:var(--muted);
+    margin-bottom:14px;
+  }
+  .candidate input[type="radio"]{
+    appearance:none;
+    -webkit-appearance:none;
+    width:22px;
+    height:22px;
+    border:2px solid var(--border);
+    border-radius:50%;
+    position:relative;
+    cursor:pointer;
+    margin-top:auto;
+  }
+  .candidate input[type="radio"]:checked{
+    border-color:var(--blue);
+  }
+  .candidate input[type="radio"]:checked::after{
+    content:"";
+    position:absolute;
+    inset:4px;
+    background:var(--blue);
+    border-radius:50%;
+  }
+  .vote-btn{
+    display:block;
+    width:100%;
+    max-width:420px;
+    margin:0 auto 40px;
+    padding:18px 24px;
+    background:var(--blue);
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    font-size:1.1rem;
+    font-weight:700;
+    cursor:pointer;
+    transition:background .15s;
+    letter-spacing:.02em;
+  }
+  .vote-btn:hover:not(:disabled){background:var(--blue-dark)}
+  .vote-btn:disabled{opacity:.55;cursor:not-allowed}
+  .message{
+    max-width:520px;
+    margin:0 auto 28px;
+    padding:16px 20px;
+    border-radius:12px;
+    text-align:center;
+    font-weight:600;
+    display:none;
+  }
+  .message.show{display:block}
+  .message.success{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+  .message.error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+  .results{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:24px;
+  }
+  .results-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:20px;
+  }
+  .total-votes{
+    font-size:.95rem;
+    color:var(--muted);
+  }
+  .total-votes strong{color:var(--blue);font-size:1.15rem}
+  .result-row{margin-bottom:18px}
+  .result-row:last-child{margin-bottom:0}
+  .result-top{
+    display:flex;
+    justify-content:space-between;
+    font-size:.95rem;
+    margin-bottom:6px;
+    gap:8px;
+  }
+  .result-top .rname{font-weight:600}
+  .result-top .rval{color:var(--muted);white-space:nowrap}
+  .bar{
+    height:12px;
+    background:#eef2f7;
+    border-radius:999px;
+    overflow:hidden;
+  }
+  .bar > span{
+    display:block;
+    height:100%;
+    background:linear-gradient(90deg,var(--blue),#3b82f6);
+    border-radius:999px;
+    transition:width .4s ease;
+    min-width:0;
+  }
+  .loading{text-align:center;color:var(--muted);padding:24px}
+  footer{
+    text-align:center;
+    padding:24px;
+    color:var(--muted);
+    font-size:.85rem;
+  }
+  @media(max-width:600px){
+    header{padding:28px 16px}
+    main{padding:20px 14px 40px}
+    .candidate{padding:16px}
+    .candidate img{width:90px;height:90px}
+  }
+  #countdown-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #000;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+#timer {
+  font-size: clamp(28px, 7vw, 80px);
+  font-weight: bold;
+  line-height: 1.5;
+}
+
+#timer small {
+  display: block;
+  font-size: clamp(14px, 2.5vw, 22px);
+  font-weight: normal;
+  margin-bottom: 20px;
+}
+</style>
+</head>
+<body>
+<div id="countdown-screen">
+  <div id="timer">
+    <small>До початку голосування</small>
+    Завантаження...
+  </div>
+</div>
+<header>
+  <h1>Вибори Президента України</h1>
+  <p>Оберіть одного кандидата</p>
+</header>
+
+<main>
+  <div id="candidatesWrap">
+    <div class="loading">Завантаження кандидатів…</div>
+  </div>
+
+  <button class="vote-btn" id="voteBtn" disabled>Проголосувати</button>
+
+  <div class="message" id="message"></div>
+
+  <!-- <section class="results" aria-labelledby="resultsTitle">
+    <div class="results-header">
+      <h2 class="section-title" id="resultsTitle">Результати голосування</h2>
+      <div class="total-votes">Всього голосів: <strong id="totalVotes">0</strong></div>
+    </div>
+    <div id="resultsList"><div class="loading">Завантаження…</div></div>
+  </section> -->
+  
+</main>
+
+<footer>Онлайн-опитування. Не є офіційними виборами.</footer>
+
+  <script>
+    
+const deadline = new Date("2026-10-12T09:00:00Z").getTime();
+
+function updateTimer() {
+  const diff = deadline - Date.now();
+  const screen = document.getElementById("countdown-screen");
+  const timer = document.getElementById("timer");
+
+  if (diff <= 0) {
+    screen.style.display = "none";
+    clearInterval(interval);
+    return;
+  }
+
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor(diff / 3600000) % 24;
+  const minutes = Math.floor(diff / 60000) % 60;
+  const seconds = Math.floor(diff / 1000) % 60;
+
+  timer.innerHTML = `
+    <small>До початку голосування</small>
+    ${days}д ${hours}г ${minutes}хв ${seconds}с
+  `;
+}
+
+updateTimer();
+const interval = setInterval(updateTimer, 1000);
+  </script>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbyz7b43KJCp8awqw0qKQsZaMXGiOOjohUOgBDLRTKZlTUWjc2QGx_ovaWbqcF5dt6u0YQ/exec";
+const STORAGE_KEY = "voted_client_id";
+const clientId = (() => {
+  let id = localStorage.getItem(STORAGE_KEY + "_id");
+  if (!id) {
+    id = (crypto.randomUUID && crypto.randomUUID()) ||
+         ("id-" + Date.now() + "-" + Math.random().toString(36).slice(2));
+    localStorage.setItem(STORAGE_KEY + "_id", id);
+  }
+  return id;
+})();
+
+const state = {
+  candidates: [],
+  selectedId: null,
+  hasVoted: localStorage.getItem(STORAGE_KEY) === "1"
+};
+
+const els = {
+  wrap: document.getElementById("candidatesWrap"),
+  btn: document.getElementById("voteBtn"),
+  msg: document.getElementById("message"),
+  list: document.getElementById("resultsList"),
+  total: document.getElementById("totalVotes")
+};
+
+function showMessage(text, type){
+  els.msg.textContent = text;
+  els.msg.className = "message show " + (type || "success");
+}
+
+function hideMessage(){ els.msg.className = "message"; }
+
+async function api(action, params){
+  const url = new URL(API_URL);
+  url.searchParams.set("action", action);
+  if (params) {
+    for (const k in params) url.searchParams.set(k, params[k]);
+  }
+  const res = await fetch(url.toString(), { method: "GET", redirect: "follow" });
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data;
+}
+
+function renderCandidates(){
+  if (!state.candidates.length){
+    els.wrap.innerHTML = '<div class="loading">Кандидатів не знайдено.</div>';
+    return;
+  }
+  els.wrap.className = "candidates";
+  els.wrap.innerHTML = state.candidates.map(c => `
+    <label class="candidate" data-id="${c.id}">
+      <img src="${c.photo_url}" alt="${c.name}"
+           onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22110%22 height=%22110%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23e2e8f0%22/><text x=%2250%25%22 y=%2255%25%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22>?</text></svg>'">
+      <div class="name">${c.name}</div>
+      <div class="party">${c.party}</div>
+      <input type="radio" name="candidate" value="${c.id}">
+    </label>
+  `).join("");
+
+  els.wrap.querySelectorAll(".candidate").forEach(el => {
+    el.addEventListener("click", () => selectCandidate(el.dataset.id));
+  });
+}
+
+function selectCandidate(id){
+  if (state.hasVoted) return;
+  state.selectedId = id;
+  els.wrap.querySelectorAll(".candidate").forEach(el => {
+    const on = el.dataset.id === id;
+    el.classList.toggle("selected", on);
+    el.querySelector("input").checked = on;
+  });
+  els.btn.disabled = false;
+  hideMessage();
+}
+
+function lockVotingUI(){
+  state.hasVoted = true;
+  els.btn.disabled = true;
+  els.btn.textContent = "Ви вже проголосували";
+  els.wrap.querySelectorAll("input").forEach(i => i.disabled = true);
+}
+
+async function submitVote(){
+  if (!state.selectedId){ showMessage("Оберіть кандидата.", "error"); return; }
+  if (state.hasVoted){ showMessage("Ви вже проголосували.", "error"); return; }
+
+  els.btn.disabled = true;
+  els.btn.textContent = "Надсилання…";
+  hideMessage();
+
+  try {
+    const data = await api("vote", {
+      candidate_id: state.selectedId,
+      client_id: clientId
+    });
+    if (data.ok){
+      localStorage.setItem(STORAGE_KEY, "1");
+      lockVotingUI();
+      showMessage("Ваш голос прийнято. Дякуємо!", "success");
+      await loadResults();
+    } else {
+      throw new Error(data.error || "Помилка голосування");
+    }
+  } catch (e){
+    els.btn.disabled = false;
+    els.btn.textContent = "Проголосувати";
+    showMessage("Помилка: " + e.message, "error");
+  }
+}
+
+function renderResults(stats){
+  const total = stats.total || 0;
+  els.total.textContent = total;
+
+  if (!stats.candidates || !stats.candidates.length){
+    els.list.innerHTML = '<div class="loading">Немає даних.</div>';
+    return;
+  }
+
+  els.list.innerHTML = stats.candidates.map(c => {
+    const pct = total > 0 ? (c.votes / total) * 100 : 0;
+    const pctStr = pct.toFixed(1).replace(".", ",");
+    return `
+      <div class="result-row">
+        <div class="result-top">
+          <span class="rname">${c.name}</span>
+          <span class="rval">${c.votes} гол. · ${pctStr}%</span>
+        </div>
+        <div class="bar"><span style="width:${pct}%"></span></div>
+      </div>
+    `;
+  }).join("");
+}
+
+async function loadCandidates(){
+  try {
+    const data = await api("config");
+    state.candidates = data.candidates || [];
+    renderCandidates();
+  } catch (e){
+    els.wrap.innerHTML = '<div class="loading">Помилка завантаження: ' + e.message + '</div>';
+  }
+}
+
+async function loadResults(){
+  try {
+    const data = await api("results");
+    renderResults(data);
+  } catch (e){
+    els.list.innerHTML = '<div class="loading">Помилка: ' + e.message + '</div>';
+  }
+}
+
+els.btn.addEventListener("click", submitVote);
+
+(async function init(){
+  await loadCandidates();
+  await loadResults();
+  if (state.hasVoted) lockVotingUI();
+  setInterval(loadResults, 30000);
+})();
+</script>
+</body>
+</html>
