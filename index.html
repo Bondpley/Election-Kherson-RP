@@ -249,6 +249,23 @@
   font-weight: normal;
   margin-bottom: 20px;
 }
+
+  .tour-countdown {
+    text-align: center;
+    padding: 20px;
+  }
+
+  .tour-countdown__title {
+    margin-bottom: 8px;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .tour-countdown__time {
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
 </style>
 </head>
 <body>
@@ -262,6 +279,12 @@
   <h1>Вибори Президента України</h1>
   <p>Оберіть одного кандидата</p>
 </header>
+<div class="tour-countdown">
+  <div class="tour-countdown__title">До кінця першого туру</div>
+  <div class="tour-countdown__time" id="tour-countdown" role="timer" aria-live="polite">
+    Завантаження…
+  </div>
+</div>
 
 <main>
   <div id="candidatesWrap">
@@ -283,6 +306,32 @@
 </main>
 
 <footer>Онлайн-опитування. Не є офіційними виборами.</footer>
+<script>
+  const tourEnd = new Date('2026-10-15T12:00:00+03:00').getTime();
+  const countdown = document.getElementById('tour-countdown');
+
+  function updateCountdown() {
+    const remaining = tourEnd - Date.now();
+
+    if (remaining <= 0) {
+      countdown.textContent = 'Перший Тур завершено';
+      clearInterval(timerInterval);
+      return;
+    }
+
+    const days = Math.floor(remaining / 86_400_000);
+    const hours = Math.floor((remaining % 86_400_000) / 3_600_000);
+    const minutes = Math.floor((remaining % 3_600_000) / 60_000);
+    const seconds = Math.floor((remaining % 60_000) / 1_000);
+
+    countdown.textContent =
+      `${days} дн. ${String(hours).padStart(2, '0')} год. ` +
+      `${String(minutes).padStart(2, '0')} хв. ${String(seconds).padStart(2, '0')} сек.`;
+  }
+
+  updateCountdown();
+  const timerInterval = setInterval(updateCountdown, 1000);
+</script>
 
   <script>
     
@@ -315,7 +364,7 @@ const interval = setInterval(updateTimer, 1000);
   </script>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbyz7b43KJCp8awqw0qKQsZaMXGiOOjohUOgBDLRTKZlTUWjc2QGx_ovaWbqcF5dt6u0YQ/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwmoqOdPVbGZ4BjmF2dzXnohEdXcsV0clzseofV2uCkv8aRMTEAPq-SaSYb_7CBNZWC1Q/exec";
 const STORAGE_KEY = "voted_client_id";
 const clientId = (() => {
   let id = localStorage.getItem(STORAGE_KEY + "_id");
