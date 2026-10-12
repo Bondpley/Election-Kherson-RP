@@ -338,7 +338,6 @@ const els = {
   btn: document.getElementById("voteBtn"),
   msg: document.getElementById("message"),
   list: document.getElementById("resultsList"),
-  total: document.getElementById("totalVotes")
 };
 
 function showMessage(text, type){
@@ -460,15 +459,6 @@ async function loadCandidates(){
     renderCandidates();
   } catch (e){
     els.wrap.innerHTML = '<div class="loading">Помилка завантаження: ' + e.message + '</div>';
-  }
-}
-
-async function loadResults(){
-  try {
-    const data = await api("results");
-    renderResults(data);
-  } catch (e){
-    els.list.innerHTML = '<div class="loading">Помилка: ' + e.message + '</div>';
   }
 }
 
