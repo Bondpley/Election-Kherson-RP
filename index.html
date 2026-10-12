@@ -417,7 +417,6 @@ async function submitVote(){
       localStorage.setItem(STORAGE_KEY, "1");
       lockVotingUI();
       showMessage("Ваш голос прийнято. Дякуємо!", "success");
-      await loadResults();
     } else {
       throw new Error(data.error || "Помилка голосування");
     }
@@ -466,9 +465,7 @@ els.btn.addEventListener("click", submitVote);
 
 (async function init(){
   await loadCandidates();
-  await loadResults();
   if (state.hasVoted) lockVotingUI();
-  setInterval(loadResults, 30000);
 })();
 </script>
 </body>
