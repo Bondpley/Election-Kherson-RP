@@ -280,7 +280,7 @@
   <p>Оберіть одного кандидата</p>
 </header>
 <div class="tour-countdown">
-  <div class="tour-countdown__title">До кінця першого туру</div>
+  <div class="tour-countdown__title">До кінця другого туру</div>
   <div class="tour-countdown__time" id="tour-countdown" role="timer" aria-live="polite">
     Завантаження…
   </div>
@@ -314,7 +314,7 @@
     const remaining = tourEnd - Date.now();
 
     if (remaining <= 0) {
-      countdown.textContent = 'Перший Тур завершено';
+      countdown.textContent = 'Другий Тур завершено';
       clearInterval(timerInterval);
       return;
     }
