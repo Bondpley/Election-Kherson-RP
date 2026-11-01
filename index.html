@@ -71,7 +71,7 @@
 <footer>Онлайн-опитування. Не є офіційними виборами.</footer>
 
 <script>
-  const TOUR_END = new Date('2026-10-5T12:00:00+02:00').getTime();
+  const TOUR_END = new Date('2026-11-05T12:00:00+02:00').getTime();
   const countdownEl = document.getElementById('tour-countdown');
   let tourInterval = null;
 
@@ -93,7 +93,7 @@
 </script>
 
 <script>
-  const DEADLINE = new Date('2026-10-2T12:00:00+02:00').getTime();
+  const DEADLINE = new Date('2026-11-02T12:00:00+02:00').getTime();
   let countdownInterval = null;
 
   function updateStartCountdown() {
@@ -170,7 +170,7 @@
     const r = await fetch('https://api64.ipify.org?format=json', { cache: 'no-store' });
     if (!r.ok) throw new Error('IP lookup failed');
     const d = await r.json();
-    if (!d || !d.ip) throw new Error('IP lookup failed');
+    if (!d || !d.ip) throw new Error('!');
     return d.ip;
   }
 
@@ -180,19 +180,26 @@
       return;
     }
     els.wrap.className = 'candidates';
+    
     els.wrap.innerHTML = state.candidates.map(c => {
       const id = escapeHtml_(c.id);
       const name = escapeHtml_(c.name);
       const party = escapeHtml_(c.party);
       const photo = escapeHtml_(c.photo_url);
-      const fallback = "this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22110%22 height=%22110%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23e2e8f0%22/><text x=%2250%25%22 y=%2255%25%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22>?</text></svg>'";
       return `<label class="candidate" data-id="${id}">
-        <img src="${photo}" alt="${name}" onerror="${fallback}">
+        <img src="${photo}" alt="${name}">
         <div class="name">${name}</div>
         <div class="party">${party}</div>
         <input type="radio" name="candidate" value="${id}">
       </label>`;
     }).join('');
+
+    els.wrap.querySelectorAll('.candidate img').forEach(img => {
+      img.addEventListener('error', function() {
+        this.onerror = null;
+        this.src = 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22110%22 height=%22110%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23e2e8f0%22/><text x=%2250%25%22 y=%2255%25%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22>?</text></svg>';
+      });
+    });
 
     els.wrap.querySelectorAll('.candidate').forEach(el => {
       el.addEventListener('click', () => selectCandidate(el.dataset.id));
