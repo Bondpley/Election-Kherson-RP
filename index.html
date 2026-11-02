@@ -1,302 +1,391 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Вибори Президента України</title>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-<style>
-  :root{--blue:#002f61;--blue-dark:#004494;--yellow:#FFD700;--bg:#f5f7fa;--card:#fff;--border:#e2e8f0;--text:#1a202c;--muted:#64748b}
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
-  header{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-dark) 100%);color:#fff;padding:40px 20px;text-align:center;border-bottom:4px solid var(--yellow)}
-  header h1{font-size:clamp(1.5rem,4vw,2.25rem);font-weight:700;margin-bottom:8px;letter-spacing:-.02em}
-  header p{font-size:clamp(.95rem,2.5vw,1.1rem);opacity:.95}
-  main{max-width:1000px;margin:0 auto;padding:32px 20px 60px}
-  .candidates{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:28px}
-  .candidate{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:20px;cursor:pointer;transition:border-color .15s,box-shadow .15s;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative}
-  .candidate:hover{border-color:#cbd5e1;box-shadow:0 4px 14px rgba(0,0,0,.06)}
-  .candidate.selected{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,87,183,.15)}
-  .candidate.selected::after{content:"✓";position:absolute;top:10px;right:12px;background:var(--blue);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
-  .candidate img{width:110px;height:110px;border-radius:50%;object-fit:cover;border:3px solid var(--border);margin-bottom:14px;background:#e2e8f0}
-  .candidate.selected img{border-color:var(--blue)}
-  .candidate .name{font-size:1.05rem;font-weight:700;margin-bottom:4px}
-  .candidate .party{font-size:.88rem;color:var(--muted);margin-bottom:14px}
-  .candidate input[type="radio"]{appearance:none;-webkit-appearance:none;width:22px;height:22px;border:2px solid var(--border);border-radius:50%;position:relative;cursor:pointer;margin-top:auto}
-  .candidate input[type="radio"]:checked{border-color:var(--blue)}
-  .candidate input[type="radio"]:checked::after{content:"";position:absolute;inset:4px;background:var(--blue);border-radius:50%}
-  .vote-btn{display:block;width:100%;max-width:420px;margin:0 auto 18px;padding:18px 24px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:1.1rem;font-weight:700;cursor:pointer;transition:background .15s;letter-spacing:.02em}
-  .vote-btn:hover:not(:disabled){background:var(--blue-dark)}
-  .vote-btn:disabled{opacity:.55;cursor:not-allowed}
-  .message{max-width:520px;margin:0 auto 28px;padding:16px 20px;border-radius:12px;text-align:center;font-weight:600;display:none}
-  .message.show{display:block}
-  .message.success{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
-  .message.error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
-  .loading{text-align:center;color:var(--muted);padding:24px}
-  footer{text-align:center;padding:24px;color:var(--muted);font-size:.85rem}
-  #turnstile-wrap{display:flex;justify-content:center;margin-bottom:18px}
-  @media(max-width:600px){header{padding:28px 16px}main{padding:20px 14px 40px}.candidate{padding:16px}.candidate img{width:90px;height:90px}}
-  #countdown-screen{position:fixed;inset:0;z-index:99999;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;font-family:Arial,sans-serif;padding:20px}
-  #timer{font-size:clamp(28px,7vw,80px);font-weight:bold;line-height:1.5}
-  #timer small{display:block;font-size:clamp(14px,2.5vw,22px);font-weight:normal;margin-bottom:20px}
-  .tour-countdown{text-align:center;padding:20px}
-  .tour-countdown__title{margin-bottom:8px;font-size:1.25rem;font-weight:600}
-  .tour-countdown__time{font-size:clamp(1.5rem,5vw,2.5rem);font-weight:700;font-variant-numeric:tabular-nums}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17324D">
+  <meta name="description" content="Голосування в рольовому проєкті Kherson RP. Онлайн-опитування, яке не є офіційними державними виборами.">
+  <title>Вибори Президента України · Kherson RP</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --navy: #17324d; --navy-dark: #10263b; --ink: #202a35;
+      --muted: #586573; --paper: #f4f5f3; --white: #fff;
+      --line: #d9dee3; --line-strong: #7e8e9b; --gold: #d9b44a;
+      --selected: #f0f4f8; --green: #246346; --green-bg: #edf5ef;
+      --red: #9e302b; --red-bg: #fcf0ee;
+      --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px;
+      --s6: 32px; --s7: 48px; --s8: 64px;
+      --radius: 6px; --container: 1120px; --transition: 150ms ease;
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    a { color: var(--navy); text-underline-offset: 4px; }
+    :focus-visible { outline: 3px solid var(--navy); outline-offset: 4px; }
+    h1, h2, h3, p { margin: 0; }
+    .container { width: min(calc(100% - 64px), var(--container)); margin-inline: auto; }
+    .skip-link { position: fixed; top: 8px; left: 8px; z-index: 10; padding: 12px; background: var(--white); transform: translateY(-160%); }
+    .skip-link:focus { transform: none; }
+    .site-header { background: var(--navy); color: var(--white); border-top: 3px solid var(--gold); }
+    .header-inner { min-height: 88px; display: flex; align-items: center; justify-content: space-between; gap: var(--s5); }
+    .brand { display: flex; align-items: center; gap: 15px; }
+    .brand-mark { width: 32px; height: 36px; display: grid; place-items: center; border: 1px solid #9aabb9; border-radius: 3px; flex: none; }
+    .brand-mark svg { width: 22px; height: 22px; }
+    .brand-name { display: block; font-size: 21px; font-weight: 650; letter-spacing: -.4px; line-height: 1.2; }
+    .brand-caption { display: block; margin-top: 4px; font-size: 13px; color: #d2dce5; }
+    .header-note { color: #d2dce5; font-size: 13px; text-align: right; }
+    main { padding-block: var(--s7) var(--s8); }
+    .eyebrow { color: var(--muted); font-size: 12px; font-weight: 650; letter-spacing: 1.1px; text-transform: uppercase; }
+    .title-row { display: flex; align-items: center; justify-content: space-between; gap: var(--s5); margin-top: var(--s3); }
+    h1 { font-size: clamp(27px, 3.3vw, 40px); font-weight: 650; line-height: 1.18; letter-spacing: -1.1px; }
+    .round-tag { white-space: nowrap; font-size: 13px; font-weight: 600; padding: 5px 11px; border: 1px solid var(--line-strong); border-radius: 4px; color: var(--navy); }
+    .intro { margin-top: 14px; color: var(--muted); max-width: 700px; }
+    .schedule { margin-top: var(--s6); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding-block: 18px; display: flex; align-items: center; justify-content: space-between; gap: var(--s5); }
+    .phase { display: inline-flex; align-items: center; gap: 9px; color: var(--navy); font-size: 14px; font-weight: 600; }
+    .phase-dot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--gold); }
+    .phase[data-phase="active"] .phase-dot { background: var(--green); }
+    .phase[data-phase="ended"] .phase-dot { background: var(--muted); }
+    .deadline { margin-top: 4px; font-size: 13px; color: var(--muted); }
+    .deadline time { white-space: nowrap; }
+    .compact-countdown { text-align: right; flex: none; }
+    .compact-countdown small { display: block; color: var(--muted); font-size: 12px; }
+    .compact-countdown strong { color: var(--navy); font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .voting-layout { display: grid; grid-template-columns: minmax(0, 1fr) 352px; gap: var(--s6); align-items: start; margin-top: 38px; }
+    .section-heading { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
+    .step { display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid var(--line-strong); border-radius: 50%; font-size: 12px; color: var(--navy); flex: none; font-variant-numeric: tabular-nums; }
+    h2, legend { font-size: 19px; font-weight: 650; letter-spacing: -.3px; line-height: 1.4; }
+    .section-help { color: var(--muted); font-size: 14px; margin-bottom: var(--s5); }
+    fieldset { padding: 0; border: 0; margin: 0; min-width: 0; }
+    legend { padding: 0; width: 100%; }
+    .candidate-list { display: grid; gap: var(--s3); }
+    .candidate { position: relative; display: grid; grid-template-columns: 80px minmax(0, 1fr) 24px; gap: 20px; align-items: center; padding: 22px; min-height: 137px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); cursor: pointer; transition: background var(--transition), border-color var(--transition); }
+    .candidate:hover:not(.is-disabled) { border-color: var(--line-strong); }
+    .candidate.is-selected { border-color: var(--navy); background: var(--selected); box-shadow: inset 3px 0 var(--navy); }
+    .candidate:focus-within { outline: 3px solid var(--navy); outline-offset: 3px; }
+    .candidate.is-disabled { cursor: default; }
+    .portrait { display: grid; place-items: center; width: 80px; height: 88px; background: #e9edf0; border-radius: 3px; overflow: hidden; color: #536779; font-size: 24px; font-weight: 500; }
+    .portrait img { grid-area: 1 / 1; width: 100%; height: 100%; object-fit: cover; }
+    .portrait span { grid-area: 1 / 1; }
+    .candidate-copy { min-width: 0; overflow-wrap: anywhere; }
+    .candidate-name { display: block; color: var(--ink); font-size: 19px; font-weight: 600; line-height: 1.35; }
+    .candidate-party { display: block; margin-top: 5px; color: var(--muted); font-size: 14px; line-height: 1.4; }
+    .selection-label { display: block; min-height: 18px; margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--navy); visibility: hidden; }
+    .is-selected .selection-label { visibility: visible; }
+    .candidate input { appearance: none; -webkit-appearance: none; width: 24px; height: 24px; margin: 0; border: 1.5px solid var(--line-strong); border-radius: 50%; background: var(--white); display: grid; place-items: center; cursor: inherit; }
+    .candidate input:checked { border: 2px solid var(--navy); }
+    .candidate input:checked::before { content: ""; width: 12px; height: 12px; background: var(--navy); border-radius: 50%; }
+    .candidate input:focus-visible { outline: none; }
+    .ballot-note { display: flex; align-items: flex-start; gap: 9px; color: var(--muted); font-size: 13px; margin-top: 18px; }
+    .ballot-note svg { flex: none; margin-top: 2px; }
+    .confirmation { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s5); }
+    .confirmation .section-heading { margin-bottom: 22px; }
+    .choice { border-block: 1px solid var(--line); padding-block: 19px; margin-bottom: 20px; min-height: 108px; overflow-wrap: anywhere; }
+    .choice-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .choice-name { font-size: 17px; font-weight: 600; line-height: 1.4; }
+    .choice-party { color: var(--muted); font-size: 13px; margin-top: 4px; }
+    .choice-empty { font-size: 15px; font-weight: 400; color: var(--muted); }
+    .verification-title { font-size: 14px; font-weight: 600; }
+    .verification-status { font-size: 13px; color: var(--muted); margin-top: 5px; }
+    #turnstile-wrap { min-height: 65px; margin-top: 12px; width: 100%; }
+    .button { display: inline-flex; justify-content: center; align-items: center; gap: 10px; min-height: 48px; border: 1px solid var(--navy); border-radius: 4px; padding: 11px 16px; background: var(--navy); color: var(--white); font-size: 15px; font-weight: 600; transition: background var(--transition); }
+    .button:hover:not(:disabled) { background: var(--navy-dark); }
+    .button:disabled { background: #e7ebee; border-color: #e7ebee; color: var(--muted); cursor: not-allowed; }
+    .vote-button { width: 100%; margin-top: 20px; }
+    .button svg { width: 17px; height: 17px; flex: none; }
+    .button-secondary { background: transparent; color: var(--navy); border-color: var(--line-strong); font-size: 14px; }
+    .button-secondary:hover:not(:disabled) { background: var(--selected); }
+    .action-help { font-size: 13px; color: var(--muted); margin-top: 12px; line-height: 1.45; }
+    .message { margin-top: 18px; padding: 14px; font-size: 14px; border: 1px solid var(--line); border-radius: 4px; overflow-wrap: anywhere; }
+    .message.success { color: var(--green); border-color: #a3c6b3; background: var(--green-bg); }
+    .message.error { color: var(--red); border-color: #dbb3af; background: var(--red-bg); }
+    .message.info { color: var(--navy); background: var(--selected); }
+    .retry-verification { margin-top: 10px; width: 100%; }
+    .state-box { border: 1px solid var(--line); padding: 30px 24px; border-radius: var(--radius); background: var(--white); }
+    .state-box h3 { font-size: 17px; font-weight: 600; }
+    .state-box p { font-size: 14px; color: var(--muted); margin-top: 8px; }
+    .state-box .button { margin-top: 20px; }
+    .skeleton { height: 137px; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); display: flex; gap: 20px; align-items: center; padding: 22px; }
+    .skeleton-photo { width: 80px; height: 88px; background: #e9edf0; border-radius: 3px; flex: none; }
+    .skeleton-lines { width: 60%; }
+    .skeleton-line { height: 12px; margin-block: 12px; background: #e9edf0; border-radius: 2px; }
+    .skeleton-line:last-child { width: 65%; }
+    .waiting { max-width: 840px; margin: 40px auto 0; background: var(--white); border: 1px solid var(--line); border-top: 3px solid var(--navy); border-radius: var(--radius); padding: var(--s7); }
+    .waiting-heading { display: flex; align-items: center; gap: 14px; margin-bottom: var(--s4); color: var(--navy); }
+    .waiting-heading svg { width: 26px; height: 26px; flex: none; }
+    .waiting h2 { font-size: 26px; letter-spacing: -.6px; }
+    .waiting > p { color: var(--muted); max-width: 590px; }
+    .large-countdown { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-block: 32px; max-width: 540px; }
+    .countdown-unit { padding-block: 17px; border: 1px solid var(--line); border-radius: 4px; text-align: center; }
+    .countdown-unit strong { display: block; font-size: 38px; font-weight: 550; color: var(--navy); font-variant-numeric: tabular-nums; line-height: 1.2; }
+    .countdown-unit span { display: block; font-size: 12px; color: var(--muted); margin-top: 5px; }
+    .waiting-date { padding-top: 22px; border-top: 1px solid var(--line); font-size: 14px; }
+    .waiting-date strong { display: block; color: var(--ink); margin-top: 5px; font-weight: 600; }
+    .closed-notice { margin-top: 24px; border-left: 3px solid var(--navy); background: var(--white); padding: 18px 22px; }
+    .closed-notice p { margin-top: 4px; color: var(--muted); font-size: 14px; }
+    .site-footer { border-top: 1px solid var(--line); padding-block: 26px 32px; }
+    .footer-inner { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+    .footer-title { font-size: 14px; font-weight: 600; color: var(--navy); }
+    .footer-note { font-size: 13px; color: var(--muted); max-width: 480px; margin-top: 5px; }
+    .footer-role { font-size: 12px; color: var(--muted); margin-top: 3px; white-space: nowrap; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    @media (min-width: 1100px) { .confirmation { position: sticky; top: 24px; } }
+    @media (max-width: 960px) { .voting-layout { grid-template-columns: minmax(0, 1fr); gap: 28px; } .confirmation { padding: 20px; } .candidate { grid-template-columns: 64px minmax(0, 1fr) 24px; padding: 18px; gap: 14px; } .portrait { width: 64px; height: 76px; } .candidate-name { font-size: 17px; } }
+    @media (max-width: 760px) { .container { width: calc(100% - 40px); } .header-inner { min-height: 78px; } .header-note { display: none; } main { padding-block: 32px 40px; } .title-row { align-items: flex-start; gap: 14px; flex-direction: column; } h1 { letter-spacing: -.6px; } .schedule { margin-top: 24px; align-items: flex-start; } .deadline { max-width: 260px; } .compact-countdown strong { font-size: 15px; } .voting-layout { grid-template-columns: minmax(0,1fr); gap: 28px; margin-top: 28px; } .candidate { min-height: 126px; grid-template-columns: 70px minmax(0,1fr) 24px; gap: 16px; } .portrait { width: 70px; height: 82px; } .confirmation { padding: 24px; } .waiting { padding: 28px; margin-top: 28px; } .footer-inner { display: block; } .footer-role { margin-top: 16px; } }
+    @media (max-width: 420px) { .container { width: calc(100% - 32px); } .intro { font-size: 15px; } .schedule { gap: 14px; flex-direction: column; } .compact-countdown { text-align: left; display: flex; gap: 12px; align-items: baseline; } .candidate { padding: 16px; gap: 12px; grid-template-columns: 56px minmax(0,1fr) 24px; } .portrait { width: 56px; height: 70px; font-size: 20px; } .candidate-name { font-size: 17px; } .candidate-party { font-size: 13px; } .confirmation { padding: 12px; } .waiting { padding: 24px 20px; } .waiting h2 { font-size: 22px; } .large-countdown { gap: 8px; } .countdown-unit strong { font-size: 29px; } .countdown-unit { padding-block: 13px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+  </style>
 </head>
 <body>
-<div id="countdown-screen"><div id="timer"><small>До початку голосування</small>Завантаження...</div></div>
-
-<header>
-  <h1>Вибори Президента України</h1>
-  <p>Оберіть одного кандидата</p>
-</header>
-
-<div class="tour-countdown">
-  <div class="tour-countdown__title">До кінця другого туру</div>
-  <div class="tour-countdown__time" id="tour-countdown" role="timer" aria-live="polite">Завантаження…</div>
-</div>
-
-<main>
-  <div id="candidatesWrap"><div class="loading">Завантаження кандидатів…</div></div>
-
-  <div id="turnstile-wrap"></div>
-
-  <button class="vote-btn" id="voteBtn" disabled>Проголосувати</button>
-
-  <div class="message" id="message"></div>
-</main>
-
-<footer>Онлайн-опитування. Не є офіційними виборами.</footer>
-
-<script>
-  const TOUR_END = new Date('2026-11-05T12:00:00+02:00').getTime();
-  const countdownEl = document.getElementById('tour-countdown');
-  let tourInterval = null;
-
-  function updateTourCountdown() {
-    const remaining = TOUR_END - Date.now();
-    if (remaining <= 0) {
-      countdownEl.textContent = 'Другий Тур завершено';
-      if (tourInterval) clearInterval(tourInterval);
-      return;
+  <a class="skip-link" href="#main">Перейти до голосування</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="m8 3 9 4-4 8-9-4zM9 6l5 2M8 9l4 2M4 14H2v7h20v-7h-6M7 17h10"/></svg></span>
+        <div><span class="brand-name">Kherson RP</span><span class="brand-caption">Платформа голосування · рольовий проєкт</span></div>
+      </div>
+      <p class="header-note">Онлайн-опитування<br>учасників проєкту</p>
+    </div>
+  </header>
+  <main id="main" class="container">
+    <div class="eyebrow">Голосування учасників</div>
+    <div class="title-row"><h1>Вибори Президента України</h1><span class="round-tag">Другий тур</span></div>
+    <p class="intro">Голосування в межах рольового проєкту Kherson RP. Не є офіційними державними виборами.</p>
+    <section class="schedule" aria-label="Строки голосування">
+      <div><p class="phase" id="phase" data-phase="waiting"><span class="phase-dot" aria-hidden="true"></span><span id="phaseText" role="status">Голосування ще не розпочалося</span></p><p class="deadline">Період: <time datetime="2026-11-02T12:00:00+02:00">02.11.2026, 12:00</time> — <time datetime="2026-11-05T12:00:00+02:00">05.11.2026, 12:00</time> · UTC+02:00</p></div>
+      <div class="compact-countdown" id="endCountdownWrap" hidden><small>До завершення</small><strong id="endCountdown" role="timer" aria-live="off">—</strong></div>
+    </section>
+    <section class="waiting" id="waiting" aria-labelledby="waitingTitle">
+      <div class="waiting-heading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg><h2 id="waitingTitle">Голосування незабаром розпочнеться</h2></div>
+      <p>Другий тур відкриється у зазначений час. Сторінка автоматично перейде до вибору кандидата — оновлювати її не потрібно.</p>
+      <div class="large-countdown" id="startCountdown" role="timer" aria-label="До початку голосування" aria-live="off">
+        <div class="countdown-unit"><strong id="days">00</strong><span>днів</span></div><div class="countdown-unit"><strong id="hours">00</strong><span>годин</span></div><div class="countdown-unit"><strong id="minutes">00</strong><span>хвилин</span></div><div class="countdown-unit"><strong id="seconds">00</strong><span>секунд</span></div>
+      </div>
+      <p class="waiting-date">Початок другого туру<strong><time datetime="2026-11-02T12:00:00+02:00">2 листопада 2026 року о 12:00 (UTC+02:00)</time></strong></p>
+    </section>
+    <div class="closed-notice" id="closedNotice" hidden><strong>Другий тур завершено</strong><p>Надсилання голосів закрито. Список кандидатів залишається доступним для перегляду.</p></div>
+    <div class="voting-layout" id="votingLayout" hidden>
+      <section aria-label="Бюлетень">
+        <fieldset aria-describedby="candidateHelp" id="candidateFieldset">
+          <legend><span class="section-heading"><span class="step" aria-hidden="true">1</span>Оберіть кандидата</span></legend>
+          <p class="section-help" id="candidateHelp">Один кандидат — один вибір. Натисніть на рядок із його ім’ям.</p>
+          <div class="candidate-list" id="candidatesWrap" aria-busy="true">
+            <p class="sr-only" role="status">Завантаження кандидатів…</p>
+            <div class="skeleton" aria-hidden="true"><div class="skeleton-photo"></div><div class="skeleton-lines"><div class="skeleton-line"></div><div class="skeleton-line"></div></div></div>
+            <div class="skeleton" aria-hidden="true"><div class="skeleton-photo"></div><div class="skeleton-lines"><div class="skeleton-line"></div><div class="skeleton-line"></div></div></div>
+          </div>
+        </fieldset>
+        <p class="ballot-note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v1"/></svg>Перед надсиланням можна змінити свій вибір.</p>
+      </section>
+      <aside class="confirmation" aria-labelledby="confirmationTitle">
+        <h2 class="section-heading" id="confirmationTitle"><span class="step" aria-hidden="true">2</span>Підтвердьте вибір</h2>
+        <div class="choice" aria-live="polite" aria-atomic="true"><p class="choice-label">Ваш вибір</p><p class="choice-name choice-empty" id="choiceName">Кандидата ще не обрано</p><p class="choice-party" id="choiceParty" hidden></p></div>
+        <div id="verification"><p class="verification-title">Перевірка Cloudflare Turnstile</p><p class="verification-status" id="verificationStatus" role="status">Завантаження перевірки…</p><div id="turnstile-wrap"></div><button type="button" class="button button-secondary retry-verification" id="retryVerification" hidden>Повторити перевірку</button></div>
+        <button type="button" class="button vote-button" id="voteBtn" aria-describedby="actionHelp" disabled><span id="buttonText">Проголосувати</span><svg id="buttonArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
+        <p class="action-help" id="actionHelp">Оберіть одного кандидата зі списку.</p>
+        <div class="message" id="message" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+      </aside>
+    </div>
+    <noscript><div class="state-box"><h2>Для голосування потрібен JavaScript</h2><p>Увімкніть JavaScript у браузері та оновіть сторінку.</p></div></noscript>
+  </main>
+  <footer class="site-footer"><div class="container footer-inner"><div><p class="footer-title">Kherson RP · рольовий проєкт</p><p class="footer-note">Онлайн-опитування учасників. Ця платформа не представляє державні виборчі органи та не проводить офіційних виборів.</p></div><p class="footer-role">Платформа голосування</p></div></footer>
+  <script>
+    'use strict';
+    const TOUR_START = new Date('2026-11-02T12:00:00+02:00').getTime();
+    const TOUR_END = new Date('2026-11-05T12:00:00+02:00').getTime();
+    const API_URL = 'https://script.google.com/macros/s/AKfycbysYRVqVAzWMzs4qENswMnNm1ff6HEt-kk7k-gJ6j2n5zgl0FzCZ1OVdYPSwnqJ7zUvbA/exec';
+    const TURNSTILE_SITE_KEY = '0x4AAAAAAFWprVDJGF1Savte';
+    const STORAGE_KEY = 'voted_client_id_tour_3';
+    const $ = id => document.getElementById(id);
+    const state = { candidates: [], selectedId: null, hasVoted: false, success: false, submitting: false, loading: false, phase: null, turnstileToken: null, verification: 'loading', widgetId: null, storageAvailable: true };
+    function readStorage(key) { try { return localStorage.getItem(key); } catch (_) { state.storageAvailable = false; return null; } }
+    function writeStorage(key, value) { try { localStorage.setItem(key, value); return true; } catch (_) { state.storageAvailable = false; return false; } }
+    const clientId = (() => { let id = readStorage(STORAGE_KEY + '_id'); if (!id) { id = (crypto.randomUUID && crypto.randomUUID()) || ('id-' + Date.now() + '-' + Math.random().toString(36).slice(2)); writeStorage(STORAGE_KEY + '_id', id); } return id; })();
+    state.hasVoted = readStorage(STORAGE_KEY) === '1';
+    function showMessage(text, type = 'info') { $('message').textContent = text; $('message').className = 'message ' + type; $('message').hidden = false; }
+    function hideMessage() { $('message').hidden = true; }
+    function getVotingTime() { return Date.now(); }
+    function period() { const now = getVotingTime(); return now < TOUR_START ? 'waiting' : now >= TOUR_END ? 'ended' : 'active'; }
+    function updateVotingUI() {
+      const phase = period();
+      const locked = state.hasVoted || state.submitting || phase !== 'active';
+      $('voteBtn').disabled = locked || !state.selectedId || !state.turnstileToken || !state.candidates.length || state.loading;
+      $('buttonText').textContent = state.submitting ? 'Надсилання голосу…' : state.hasVoted ? (state.success ? 'Голос прийнято' : 'Ви вже проголосували') : phase === 'ended' ? 'Голосування завершено' : 'Проголосувати';
+      $('buttonArrow').hidden = state.submitting || state.hasVoted || phase !== 'active';
+      $('voteBtn').setAttribute('aria-busy', String(state.submitting));
+      $('candidatesWrap').querySelectorAll('input').forEach(input => { input.disabled = locked; input.closest('.candidate').classList.toggle('is-disabled', locked); });
+      let hint = 'Перевірте свій вибір перед надсиланням.';
+      if (state.submitting) hint = 'Дочекайтеся відповіді сервера. Не закривайте сторінку.';
+      else if (state.hasVoted) hint = 'Повторне надсилання голосу в цьому браузері недоступне.';
+      else if (phase === 'ended') hint = 'Прийом голосів завершено 5 листопада о 12:00 (UTC+02:00).';
+      else if (phase === 'waiting') hint = 'Голосування відкриється у зазначений час.';
+      else if (state.loading) hint = 'Зачекайте, завантажуємо список кандидатів.';
+      else if (!state.candidates.length) hint = 'Для голосування потрібен доступний список кандидатів.';
+      else if (!state.selectedId) hint = 'Оберіть одного кандидата зі списку.';
+      else if (!state.turnstileToken) hint = 'Пройдіть перевірку, щоб надіслати голос.';
+      $('actionHelp').textContent = hint;
+      $('verification').hidden = state.hasVoted || phase !== 'active';
+      const selected = state.candidates.find(c => c.id === state.selectedId);
+      $('choiceName').textContent = selected ? selected.name : 'Кандидата ще не обрано';
+      $('choiceName').classList.toggle('choice-empty', !selected);
+      $('choiceParty').textContent = selected ? selected.party : '';
+      $('choiceParty').hidden = !selected || !selected.party;
     }
-    const d = Math.floor(remaining / 86400000);
-    const h = Math.floor((remaining % 86400000) / 3600000);
-    const m = Math.floor((remaining % 3600000) / 60000);
-    const s = Math.floor((remaining % 60000) / 1000);
-    countdownEl.textContent = `${d} дн. ${String(h).padStart(2,'0')} год. ${String(m).padStart(2,'0')} хв. ${String(s).padStart(2,'0')} сек.`;
-  }
-  updateTourCountdown();
-  tourInterval = setInterval(updateTourCountdown, 1000);
-</script>
-
-<script>
-  const DEADLINE = new Date('2026-11-02T12:00:00+02:00').getTime();
-  let countdownInterval = null;
-
-  function updateStartCountdown() {
-    const diff = DEADLINE - Date.now();
-    const screen = document.getElementById('countdown-screen');
-    const timer = document.getElementById('timer');
-    if (diff <= 0) {
-      screen.style.display = 'none';
-      if (countdownInterval) clearInterval(countdownInterval);
-      return;
+    function updateTime() {
+      const phase = period();
+      const changed = phase !== state.phase;
+      state.phase = phase;
+      $('waiting').hidden = phase !== 'waiting';
+      $('votingLayout').hidden = phase === 'waiting';
+      $('closedNotice').hidden = phase !== 'ended';
+      $('endCountdownWrap').hidden = phase !== 'active';
+      if (changed) {
+        $('phase').dataset.phase = phase;
+        $('phaseText').textContent = phase === 'waiting' ? 'Голосування ще не розпочалося' : phase === 'active' ? 'Голосування триває' : 'Голосування завершено';
+        updateVotingUI();
+        if (phase === 'active') initTurnstile();
+      }
+      const remaining = Math.max(0, (phase === 'waiting' ? TOUR_START : TOUR_END) - getVotingTime());
+      const d = Math.floor(remaining / 86400000), h = Math.floor(remaining / 3600000) % 24, m = Math.floor(remaining / 60000) % 60, s = Math.floor(remaining / 1000) % 60;
+      const pad = n => String(n).padStart(2, '0');
+      if (phase === 'waiting') { $('days').textContent = pad(d); $('hours').textContent = pad(h); $('minutes').textContent = pad(m); $('seconds').textContent = pad(s); }
+      else if (phase === 'active') $('endCountdown').textContent = `${d} дн. ${pad(h)}:${pad(m)}:${pad(s)}`;
     }
-    const d = Math.floor(diff / 86400000);
-    const h = Math.floor(diff / 3600000) % 24;
-    const m = Math.floor(diff / 60000) % 60;
-    const s = Math.floor(diff / 1000) % 60;
-    timer.innerHTML = `<small>До початку голосування</small>${d}д ${h}г ${m}хв ${s}с`;
-  }
-  updateStartCountdown();
-  countdownInterval = setInterval(updateStartCountdown, 1000);
-</script>
-
-<script>
-  const API_URL = 'https://script.google.com/macros/s/AKfycbx3ftNvHxRWsw_mmFOpYFGOpfnfte0Kg6Ccqspo9CX3GvephBNY-QMN05f_-euNjFw8hg/exec';
-  const TURNSTILE_SITE_KEY = '0x4AAAAAAFWprVDJGF1Savte';
-  const STORAGE_KEY = 'voted_client_id_tour_3';
-
-  const clientId = (() => {
-    let id = localStorage.getItem(STORAGE_KEY + '_id');
-    if (!id) {
-      id = (crypto.randomUUID && crypto.randomUUID()) || ('id-' + Date.now() + '-' + Math.random().toString(36).slice(2));
-      localStorage.setItem(STORAGE_KEY + '_id', id);
+    async function fetchWithTimeout(url, options = {}) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 20000);
+      try { return await fetch(url, { ...options, signal: controller.signal }); } finally { clearTimeout(timeout); }
     }
-    return id;
-  })();
-
-  const state = { candidates: [], selectedId: null, hasVoted: false, turnstileToken: null };
-
-  const els = {
-    wrap: document.getElementById('candidatesWrap'),
-    btn: document.getElementById('voteBtn'),
-    msg: document.getElementById('message'),
-    turnstileWrap: document.getElementById('turnstile-wrap')
-  };
-
-  function showMessage(text, type) {
-    els.msg.textContent = text;
-    els.msg.className = 'message show ' + (type || 'success');
-  }
-  function hideMessage() { els.msg.className = 'message'; }
-
-  function escapeHtml_(s) {
-    return String(s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-  }
-
-  async function apiPost(action, data) {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(Object.assign({ action: action }, data || {})),
-      redirect: 'follow'
-    });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const json = await res.json();
-    if (json.error) throw new Error(json.error);
-    return json;
-  }
-
-  async function getUserIp() {
-    const r = await fetch('https://api64.ipify.org?format=json', { cache: 'no-store' });
-    if (!r.ok) throw new Error('IP lookup failed');
-    const d = await r.json();
-    if (!d || !d.ip) throw new Error('!');
-    return d.ip;
-  }
-
-  function renderCandidates() {
-    if (!state.candidates.length) {
-      els.wrap.innerHTML = '<div class="loading">Кандидатів не знайдено.</div>';
-      return;
+    async function apiPost(action, data = {}) {
+      const res = await fetchWithTimeout(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action, ...data }), redirect: 'follow' });
+      if (!res.ok) throw new Error('Сервер тимчасово недоступний. Спробуйте пізніше.');
+      const json = await res.json();
+      if (!json || typeof json !== 'object') throw new Error('Сервер повернув некоректну відповідь.');
+      if (json.error) throw new Error(String(json.error));
+      return json;
     }
-    els.wrap.className = 'candidates';
-    
-    els.wrap.innerHTML = state.candidates.map(c => {
-      const id = escapeHtml_(c.id);
-      const name = escapeHtml_(c.name);
-      const party = escapeHtml_(c.party);
-      const photo = escapeHtml_(c.photo_url);
-      return `<label class="candidate" data-id="${id}">
-        <img src="${photo}" alt="${name}">
-        <div class="name">${name}</div>
-        <div class="party">${party}</div>
-        <input type="radio" name="candidate" value="${id}">
-      </label>`;
-    }).join('');
-
-    els.wrap.querySelectorAll('.candidate img').forEach(img => {
-      img.addEventListener('error', function() {
-        this.onerror = null;
-        this.src = 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22110%22 height=%22110%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23e2e8f0%22/><text x=%2250%25%22 y=%2255%25%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22>?</text></svg>';
-      });
-    });
-
-    els.wrap.querySelectorAll('.candidate').forEach(el => {
-      el.addEventListener('click', () => selectCandidate(el.dataset.id));
-    });
-  }
-
-  function selectCandidate(id) {
-    if (state.hasVoted) return;
-    state.selectedId = id;
-    els.wrap.querySelectorAll('.candidate').forEach(el => {
-      const on = el.dataset.id === id;
-      el.classList.toggle('selected', on);
-      const input = el.querySelector('input');
-      if (input) input.checked = on;
-    });
-    els.btn.disabled = !state.turnstileToken;
-    hideMessage();
-  }
-
-  function lockVotingUI() {
-    state.hasVoted = true;
-    els.btn.disabled = true;
-    els.btn.textContent = 'Ви вже проголосували';
-    els.wrap.querySelectorAll('input').forEach(i => { i.disabled = true; });
-  }
-
-  function setTurnstileToken(token) {
-    state.turnstileToken = token || null;
-    els.btn.disabled = !state.turnstileToken || !state.selectedId;
-  }
-
-  async function submitVote() {
-    if (state.hasVoted) { showMessage('Ви вже проголосували.', 'error'); return; }
-    if (!state.selectedId) { showMessage('Оберіть кандидата.', 'error'); return; }
-    if (!state.turnstileToken) { showMessage('Підтвердіть, що ви не робот.', 'error'); return; }
-
-    els.btn.disabled = true;
-    els.btn.textContent = 'Надсилання…';
-    hideMessage();
-
-    try {
-      let ip;
+    async function getUserIp() {
       try {
-        ip = await getUserIp();
-      } catch (_) {
-        throw new Error('');
-      }
-
-      const data = await apiPost('vote', {
-        candidate_id: state.selectedId,
-        client_id: clientId,
-        client_ip: ip,
-        turnstile_token: state.turnstileToken
-      });
-
-      if (data.ok) {
-        localStorage.setItem(STORAGE_KEY, '1');
-        lockVotingUI();
-        showMessage('Ваш голос прийнято. Дякуємо!', 'success');
-      } else {
-        throw new Error(data.error || 'Помилка голосування');
-      }
-    } catch (e) {
-      els.btn.disabled = false;
-      els.btn.textContent = 'Проголосувати';
-      showMessage('Помилка: ' + e.message, 'error');
+        const res = await fetchWithTimeout('https://api64.ipify.org?format=json', { cache: 'no-store' });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        if (!data || typeof data.ip !== 'string' || !data.ip.trim()) throw new Error();
+        return data.ip;
+      } catch (_) { throw new Error('Не вдалося визначити IP-адресу для надсилання голосу. Перевірте з’єднання та спробуйте ще раз.'); }
     }
-  }
-
-  async function loadCandidates() {
-    try {
-      const data = await apiPost('config', {});
-      state.candidates = data.candidates || [];
-      renderCandidates();
-    } catch (e) {
-      els.wrap.innerHTML = '<div class="loading">Помилка завантаження: ' + escapeHtml_(e.message) + '</div>';
+    function safePhotoUrl(value) { try { const url = new URL(value); return ['https:', 'http:'].includes(url.protocol) ? url.href : null; } catch (_) { return null; } }
+    function renderCandidates() {
+      const wrap = $('candidatesWrap');
+      wrap.replaceChildren(); wrap.setAttribute('aria-busy', 'false');
+      if (!state.candidates.length) { renderListState('Список кандидатів поки порожній', 'Кандидати з’являться після оновлення даних організаторами.', true); updateVotingUI(); return; }
+      if (!state.candidates.some(c => c.id === state.selectedId)) state.selectedId = null;
+      for (const candidate of state.candidates) {
+        const label = document.createElement('label'); label.className = 'candidate'; label.classList.toggle('is-selected', candidate.id === state.selectedId);
+        const portrait = document.createElement('span'); portrait.className = 'portrait'; portrait.setAttribute('aria-hidden', 'true');
+        const initials = document.createElement('span'); initials.textContent = candidate.name.split(/\s+/).filter(Boolean).slice(0, 2).map(word => Array.from(word)[0]).join('').toUpperCase(); portrait.append(initials);
+        const photo = safePhotoUrl(candidate.photo_url);
+        if (photo) { const img = document.createElement('img'); img.alt = ''; img.width = 80; img.height = 88; img.loading = 'lazy'; img.addEventListener('error', () => img.remove(), { once: true }); img.src = photo; portrait.append(img); }
+        const copy = document.createElement('span'); copy.className = 'candidate-copy';
+        const name = document.createElement('span'); name.className = 'candidate-name'; name.textContent = candidate.name;
+        const party = document.createElement('span'); party.className = 'candidate-party'; party.textContent = candidate.party;
+        const selected = document.createElement('span'); selected.className = 'selection-label'; selected.textContent = 'Ваш вибір'; selected.setAttribute('aria-hidden', 'true');
+        copy.append(name, party, selected);
+        const radio = document.createElement('input'); radio.type = 'radio'; radio.name = 'candidate'; radio.value = candidate.id; radio.checked = candidate.id === state.selectedId;
+        radio.setAttribute('aria-label', candidate.name + (candidate.party ? ', ' + candidate.party : ''));
+        radio.addEventListener('change', () => selectCandidate(candidate.id));
+        label.append(portrait, copy, radio); wrap.append(label);
+      }
+      updateVotingUI();
     }
-  }
-
-  function initTurnstile() {
-    if (!window.turnstile) return;
-    window.turnstile.render(els.turnstileWrap, {
-      sitekey: TURNSTILE_SITE_KEY,
-      callback: setTurnstileToken,
-      'expired-callback': () => setTurnstileToken(null),
-      'error-callback': () => setTurnstileToken(null)
-    });
-  }
-
-  els.btn.addEventListener('click', submitVote);
-
-  (async function init() {
-    await loadCandidates();
-    if (localStorage.getItem(STORAGE_KEY) === '1') lockVotingUI();
-    if (window.turnstile) initTurnstile();
-    else window.addEventListener('load', initTurnstile);
-  })();
-</script>
+    function renderListState(title, text, retry) {
+      const box = document.createElement('div'); box.className = 'state-box';
+      const heading = document.createElement('h3'); heading.textContent = title;
+      const description = document.createElement('p'); description.textContent = text; box.append(heading, description);
+      if (retry) { const button = document.createElement('button'); button.type = 'button'; button.className = 'button button-secondary'; button.textContent = 'Оновити список'; button.addEventListener('click', loadCandidates); box.append(button); }
+      $('candidatesWrap').replaceChildren(box); $('candidatesWrap').setAttribute('aria-busy', 'false');
+    }
+    function selectCandidate(id) {
+      if (state.hasVoted || state.submitting || period() !== 'active') { updateVotingUI(); return; }
+      if (!state.candidates.some(c => c.id === id)) return;
+      state.selectedId = id;
+      $('candidatesWrap').querySelectorAll('input').forEach(input => { input.checked = input.value === id; input.closest('.candidate').classList.toggle('is-selected', input.checked); });
+      updateVotingUI();
+    }
+    async function loadCandidates() {
+      if (state.loading) return;
+      state.loading = true; $('candidatesWrap').setAttribute('aria-busy', 'true'); updateVotingUI();
+      $('candidatesWrap').querySelectorAll('button').forEach(button => { button.disabled = true; button.textContent = 'Завантаження…'; });
+      try {
+        const data = await apiPost('config');
+        if (!Array.isArray(data.candidates)) throw new Error('Сервер не повернув список кандидатів.');
+        state.candidates = data.candidates.filter(c => c && c.id != null && c.name != null).map(c => ({ id: String(c.id), name: String(c.name), party: c.party == null ? '' : String(c.party), photo_url: c.photo_url == null ? '' : String(c.photo_url) }));
+        renderCandidates();
+      } catch (_) { renderListState('Не вдалося завантажити кандидатів', 'Перевірте інтернет-з’єднання та спробуйте оновити список.', true); }
+      finally { state.loading = false; updateVotingUI(); }
+    }
+    function setVerification(status, token = null) {
+      state.verification = status; state.turnstileToken = token;
+      const messages = { loading: 'Завантаження перевірки…', ready: 'Пройдіть перевірку нижче.', verified: 'Перевірку пройдено.', expired: 'Строк перевірки минув. Пройдіть її ще раз.', error: 'Не вдалося виконати перевірку. Спробуйте ще раз.' };
+      $('verificationStatus').textContent = messages[status];
+      $('retryVerification').hidden = !['expired', 'error'].includes(status);
+      updateVotingUI();
+    }
+    let turnstileLoadTimeout = null;
+    function initTurnstile() {
+      if (!window.turnstile || state.widgetId !== null || period() !== 'active' || state.hasVoted) return;
+      try {
+        setVerification('ready');
+        state.widgetId = window.turnstile.render($('turnstile-wrap'), { sitekey: TURNSTILE_SITE_KEY, theme: 'light', size: 'flexible', language: 'uk', callback: token => setVerification('verified', token), 'expired-callback': () => setVerification('expired'), 'error-callback': () => { setVerification('error'); return true; }, 'timeout-callback': () => setVerification('expired') });
+      } catch (_) { setVerification('error'); }
+    }
+    function loadTurnstileScript() {
+      if (document.getElementById('turnstileScript')) return;
+      const script = document.createElement('script'); script.id = 'turnstileScript'; script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileReady&render=explicit'; script.async = true; script.defer = true;
+      clearTimeout(turnstileLoadTimeout);
+      turnstileLoadTimeout = setTimeout(() => { if (!window.turnstile) setVerification('error'); }, 15000);
+      script.addEventListener('load', () => clearTimeout(turnstileLoadTimeout));
+      script.addEventListener('error', () => { clearTimeout(turnstileLoadTimeout); setVerification('error'); });
+      document.head.append(script);
+    }
+    function resetVerification() {
+      setVerification('ready');
+      if (window.turnstile && state.widgetId !== null) { try { window.turnstile.reset(state.widgetId); } catch (_) { setVerification('error'); } }
+      else { $('turnstileScript')?.remove(); state.widgetId = null; loadTurnstileScript(); initTurnstile(); }
+    }
+    async function submitVote() {
+      updateTime();
+      if (state.submitting || state.hasVoted || period() !== 'active' || state.loading || !state.candidates.some(c => c.id === state.selectedId) || !state.turnstileToken) return;
+      if (readStorage(STORAGE_KEY) === '1') { state.hasVoted = true; showMessage('У цьому браузері вже збережено факт голосування.', 'info'); updateVotingUI(); return; }
+      state.submitting = true; updateVotingUI(); hideMessage();
+      const candidateId = state.selectedId;
+      let requestSent = false;
+      try {
+        const ip = await getUserIp();
+        if (period() !== 'active') throw new Error('Час голосування завершився. Голос не надіслано.');
+        if (state.hasVoted || readStorage(STORAGE_KEY) === '1') { state.hasVoted = true; throw new Error('У цьому браузері вже збережено факт голосування.'); }
+        if (!state.turnstileToken) throw new Error('Строк перевірки минув. Пройдіть її ще раз.');
+        const token = state.turnstileToken;
+        requestSent = true;
+        const data = await apiPost('vote', { candidate_id: candidateId, client_id: clientId, client_ip: ip, turnstile_token: token });
+        if (!data.ok) throw new Error('Сервер не підтвердив прийняття голосу. Спробуйте ще раз.');
+        state.hasVoted = true; state.success = true;
+        const saved = writeStorage(STORAGE_KEY, '1');
+        showMessage('Ваш голос прийнято. Дякуємо за участь!' + (saved ? '' : ' Браузер не дозволив зберегти локальну ознаку голосування.'), 'success');
+      } catch (error) {
+        const detail = error.name === 'AbortError' ? (requestSent ? 'Відповідь сервера не надійшла вчасно. Статус голосу невідомий; оновіть сторінку перед повторною спробою.' : 'Час очікування минув. Перевірте з’єднання та спробуйте ще раз.') : error.message || 'Не вдалося надіслати голос. Перевірте з’єднання та спробуйте ще раз.';
+        showMessage(detail, 'error');
+        resetVerification();
+      } finally { state.submitting = false; updateTime(); updateVotingUI(); }
+    }
+    window.onTurnstileReady = initTurnstile;
+    $('voteBtn').addEventListener('click', submitVote);
+    $('retryVerification').addEventListener('click', resetVerification);
+    window.addEventListener('storage', event => { if (event.key === STORAGE_KEY && event.newValue === '1') { state.hasVoted = true; showMessage('Голосування вже виконано в іншій вкладці цього браузера.', 'info'); updateVotingUI(); } });
+    if (state.hasVoted) showMessage('У цьому браузері вже збережено факт голосування. Дякуємо за участь.', 'info');
+    else if (!state.storageAvailable) showMessage('Локальне сховище браузера недоступне. Ознаку голосування не вдасться зберегти після закриття сторінки.', 'info');
+    updateTime(); setInterval(updateTime, 1000); loadCandidates(); loadTurnstileScript();
+  </script>
 </body>
 </html>
